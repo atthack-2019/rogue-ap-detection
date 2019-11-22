@@ -13,7 +13,7 @@ def get_ssid(valid_ssid):
     out = p.communicate()[0]
     out = out.decode("utf-8")
     values = out.split("\n")[:-1]
-    print(values)
+#    print(values)
     for i in range(0, len(values)):
         if i % 2 == 0:
             print(values[i])
@@ -37,11 +37,9 @@ def check_same_encryption(networks, valid_sec, valid_type):
 
 
 def control_AP(valid_ssid, valid_sec, valid_type):
-    invalid, sub_valid = get_ssid(valid_ssid, valid_sec, valid_type)
+    invalid, sub_valid = get_ssid(valid_ssid)
     #signature_check, new_invalids = check_same_encryption(sub_valid, valid_sec, valid_type)
     return invalid, sub_valid
-
-control_AP('"hackathon"', "IEEE 802.11i/WPA2 Version 1", "PSK")
 
 
 

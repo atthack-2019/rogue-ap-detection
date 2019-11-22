@@ -1,5 +1,9 @@
 import subprocess
 import time
+import importlib
+
+importlib.import_module("scanner")
+import scanner
 
 template = """ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
 update_config=1
@@ -19,16 +23,13 @@ network={{
 }}
 """
 
-BAD = "04:f0:21:42:1a:06"
+# BAD = "04:f0:21:42:1a:06"
 GOOD = "04:f0:21:45:cd:f3"
 
 def generate_wpasupplicant(ssid, bssid):
     filled = template.format(ssid, bssid)
     with open("/tmp/wpa_supplicant", "w") as f:
         f.write(filled)
-
-generate_wpasupplicant('turris-WPA2ent', GOOD)
-
 
 def run_scan():
     cmd = "sudo rm /var/run/wpa_supplicant/wlan0"
@@ -38,16 +39,22 @@ def run_scan():
     time.sleep(20)
     cmd = "sudo killall wpa_supplicant"
     p = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE)
-    
 
 def check_result():
     with open("/tmp/out") as f:
         res = f.read()
-        print(res)
-        if "CTRL-EVENT-EAP-FAILURE" in res or "CTRL-EVENT-EAP-TLS-CERT-ERROR" in res:
-            print("FAIL")
-        else:
+        if "CTRL-EVENT-EAP-SUCCESS" in res and "CTRL-EVENT-EAP-FAILURE EAP" not in res:
             print("OK")
+        else:
+            print("FAIL")
 
-run_scan()
-check_result()
+
+
+invalid, to_check = scanner.control_AP('"turris-WPA2ent"', "", "")
+print(invalid, to_check)
+for tup in to_check:
+    bssid = tup[0]
+    generate_wpasupplicant('turris-WPA2ent', bssid)
+    run_scan()
+    print(tup)
+    check_result()
