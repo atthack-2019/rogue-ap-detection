@@ -70,5 +70,7 @@ if __name__ == '__main__':
     nets = get_networks()
 
     circles = get_circles(nets, positions)
+    # circles = [(407, 222, 152.0182738030424), (546, 395, 78.7322553235653), (83, 110, 259.53757108554686), (631, 312, 10.253201506510855), (200, 371, 805.1857368246614), (206, 877, 756.4734324616041)]
+
     print(circles)
     print_circles(circles)
