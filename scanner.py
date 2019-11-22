@@ -16,10 +16,8 @@ def get_ssid(interface, valid_ssid, valid_encryption):
 
 
 def control_AP(interface, valid_ssid, valid_sec):
-    invalid, sub_valid = get_ssid(interface, valid_ssid, valid_sec)
-    return invalid, sub_valid
+    return get_ssid(interface, valid_ssid, valid_sec)
 
-print(control_AP("wlp5s0", "hackathon", "wpa2"))
 
 
 
