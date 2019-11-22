@@ -87,5 +87,11 @@ def get_mean_location(point_list):
     y_loc /= float(len(point_list))
     return (x_loc, y_loc)
 
+def get_center_kukly(circles):
+    p_list = calculate_intersection_points(circles)
+    smallest_circle = find_smallest_circle(circles)
+    res = remove_invalid_intersections(p_list, smallest_circle)
+    return get_mean_location(res)
+
 print("MEAN LOCATION: \n")
 print(get_mean_location(res))
