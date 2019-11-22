@@ -1,20 +1,12 @@
 import numpy as np
 import itertools
+GOOD_DIST = 200
 
 class Circle:
     def __init__(self, x, y, radius):
         self.x = x
         self.y = y
         self.radius = radius
-
-
-c1 = Circle(407,222,152.0182738030424)
-c2 = Circle(546,395,78.7322553235653)
-c3 = Circle(83,110,259.53757108554686)
-c4 = Circle(631,312,10.253201506510855)
-c6 = Circle(206,877,756.4734324616041)
-circle_ls = [c1, c2, c3, c4, c6]
-
 
 def two_circles_intersection(circle1, circle2):
     dist_x, dist_y = circle2.x - circle1.x, circle2.y - circle1.y
@@ -51,12 +43,27 @@ def calculate_intersection_points(circle_list):
         results.append(points[1])
     return results
 
-print("INTERSECTION POINTS")
-print(calculate_intersection_points(circle_ls))
-p_list = calculate_intersection_points(circle_ls)
 
+def find_smallest_circle(circle_list):
+    min_circle = circle_list[0]
+    for circle in circle_list:
+        if circle.radius <= min_circle.radius:
+            min_circle = circle
+    return min_circle
+
+
+def remove_invalid_intersections(point_list, smallest_circle):
+    result = []
+    for point in point_list:
+        dist_x, dist_y = smallest_circle.x - point[0], smallest_circle.y - point[1]
+        dist = np.sqrt(dist_x**2 + dist_y ** 2)
+        if dist < GOOD_DIST:
+            result.append(point)
+    return result
 
 def get_mean_location(point_list):
+    if(len(point_list) == 0):
+        return None
     x_loc = .0
     y_loc = .0
     for x, y in point_list:
@@ -66,5 +73,9 @@ def get_mean_location(point_list):
     y_loc /= float(len(point_list))
     return (x_loc, y_loc)
 
-print("MEAN LOCATION: \n")
-print(get_mean_location(p_list))
+def get_trilateration_point(circles):
+    p_list = calculate_intersection_points(circles)
+    smallest_circle = find_smallest_circle(circles)
+    res = remove_invalid_intersections(p_list,smallest_circle)
+    return get_mean_location(res)
+
