@@ -9,11 +9,11 @@ DIST_MULTIPLIER = 20.0
 positions = {
     'B4:FB:E4:2B:B7:': (631, 312),
     'B4:FB:E4:CF:88:': (407, 222),
-    'B4:FB:E4:2B:B1:': (83, 110)
-    #'18:E8:29:E1:76:': (546, 395),
-    #'F0:9F:C2:FE:26:': (200, 371),
-    #'78:8A:20:80:4A:': (629, 779),
-    #'B4:FB:E4:21:38:': (206, 877)
+    'B4:FB:E4:2B:B1:': (83, 110),
+    '18:E8:29:E1:76:': (546, 395),
+    'F0:9F:C2:FE:26:': (200, 371),
+    '78:8A:20:80:4A:': (629, 779),
+    'B4:FB:E4:21:38:': (206, 877)
 }
 
 def get_freq(frequency):
@@ -56,7 +56,7 @@ def print_circles(circles_ls):
     plt_circles = []
     for i in range (len(circles_ls)):
         circle = circles_ls[i]
-        plt_circles.append(plt.Circle((circle.x, circle.y), circle.radius, color = colors[i]))
+        plt_circles.append(plt.Circle((circle.x, circle.y), circle.radius, color = colors[i], alpha=0.5))
     fig, ax = plt.subplots()
     plt.grid(linestyle='--')
     ax.set_xlim((-1000, 1000))
@@ -64,7 +64,7 @@ def print_circles(circles_ls):
     for c in plt_circles:
         ax.add_artist(c)
     fig.savefig('plotcircles.png')
-    plt.plot()
+    plt.show()
 
 if __name__ == '__main__':
     nets = get_networks()
