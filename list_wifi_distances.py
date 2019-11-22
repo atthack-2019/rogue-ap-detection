@@ -3,7 +3,7 @@
 import numpy as np
 from wifi import Cell
 import matplotlib.pyplot as plt
-from my_trilateration import get_center_kukly
+from my_trilateration import get_trilateration_point
 
 DIST_MULTIPLIER = 15.55555555
 
@@ -20,12 +20,20 @@ positions = {
 def get_freq(frequency):
     return float(frequency.split()[0]) * 1000
 
+def get_network(mac):
+    result = []
+    nets = list(Cell.all('wlan0'))    
+    for net in nets:
+        if net.address == mac:
+            freq = get_freq(net.frequency)
+            return (net.address, dist(net.signal, freq))
+    return None
+
 def get_networks():
     result = []
     nets = list(Cell.all('wlan0'))
     for net in nets:
         freq = get_freq(net.frequency)
-        print(net.address, freq)
         result.append((net.address, dist(net.signal, freq)))
 
     return result
@@ -52,7 +60,6 @@ def try_get(positions, mac):
 def get_circles(nets, positions):
     circles = []
     for (mac, dist) in nets:
-        print(mac)
         pos = try_get(positions, mac)
         if pos is not None:
             circles.append(Circle(pos[0], pos[1], dist * DIST_MULTIPLIER))
@@ -71,7 +78,7 @@ def print_circles(circles_ls, centers):
     for c in plt_circles:
         ax.add_artist(c)
     center_colors = ['r', 'b']
-    i = True
+    i = 0
     for center in centers:
         plt.plot(center[0], center[1], center_colors[i] + 'o')
         i = ~i
@@ -93,14 +100,18 @@ def center_of_gravity(circles):
     return (mean_x, mean_y)
 
 if __name__ == '__main__':
-    nets = get_networks()
+    while True:
+        nets = get_networks()
 
-    #circles = [Circle(224, 288, 98.30908117508503), Circle(111, 614, 530.7598666118824), Circle(313, 65, 9.36606857087998), Circle(877, 490, 869.9444473308448)]
+        #circles = [Circle(224, 288, 98.30908117508503), Circle(111, 614, 530.7598666118824), Circle(313, 65, 9.36606857087998), Circle(877, 490, 869.9444473308448)]
 
-    circles = get_circles(nets, positions)
-    print(circles)
-    center_gravity = center_of_gravity(circles)
-    center_kukly = get_center_kukly(circles)
-    
-    print_circles(circles, [center_gravity, center_kukly])
+        circles = get_circles(nets, positions)
+        print(circles)
+        center_gravity = center_of_gravity(circles)
+        center_kukly = get_trilateration_point(circles)
+        if center_kukly is None:
+            print("fail")
+            center_kukly = (-500, -500)
+        
+        print_circles(circles, [center_gravity, center_kukly])
 
