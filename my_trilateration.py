@@ -63,7 +63,7 @@ def remove_invalid_intersections(point_list, smallest_circle):
 
 def get_mean_location(point_list):
     if(len(point_list) == 0):
-        return (0,0)
+        return None
     x_loc = .0
     y_loc = .0
     for x, y in point_list:
