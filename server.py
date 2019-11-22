@@ -26,7 +26,7 @@ def home():
         print("fail")
         center_kukly = (-500, -500)
     print_circles(circles, [center_kukly])
-    return app.send_static_file('/root/rogue-ap-detection/index.html')
+    return app.send_static_file("index.html")
 
 @app.route('/report', methods=['POST'])
 def report():
