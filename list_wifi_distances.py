@@ -4,16 +4,16 @@ import numpy as np
 from wifi import Cell
 import matplotlib.pyplot as plt
 
-DIST_MULTIPLIER = 20.0
+DIST_MULTIPLIER = 23.0
 
 positions = {
-    'B4:FB:E4:2B:B7:': (631, 312),
-    'B4:FB:E4:CF:88:': (407, 222),
-    'B4:FB:E4:2B:B1:': (83, 110),
-    '18:E8:29:E1:76:': (546, 395),
-    'F0:9F:C2:FE:26:': (200, 371),
-    '78:8A:20:80:4A:': (629, 779),
-    'B4:FB:E4:21:38:': (206, 877)
+    'B4:FB:E4:2B:B7:': (313, 65),
+    'B4:FB:E4:CF:88:': (224, 288),
+    'B4:FB:E4:2B:B1:': (111, 614),
+    '18:E8:29:E': (394, 162),
+    'F0:9F:C2:F:': (372, 495),
+    '78:8A:20:80:4A:': (778, 65),
+    'B4:FB:E4:21:38:': (877, 490)
 }
 
 def get_freq(frequency):
@@ -40,7 +40,7 @@ class Circle:
         self.radius = radius
 
     def __repr__(self):
-        return f"({self.x}, {self.y}, {self.radius})"
+        return f"Circle({self.x}, {self.y}, {self.radius})"
 
 def get_circles(nets, positions):
     circles = []
@@ -59,8 +59,8 @@ def print_circles(circles_ls):
         plt_circles.append(plt.Circle((circle.x, circle.y), circle.radius, color = colors[i], alpha=0.5))
     fig, ax = plt.subplots()
     plt.grid(linestyle='--')
-    ax.set_xlim((-1000, 1000))
-    ax.set_ylim((-1000, 1000))
+    ax.set_xlim((-1000, 1500))
+    ax.set_ylim((-1000, 1500))
     for c in plt_circles:
         ax.add_artist(c)
     fig.savefig('plotcircles.png')
@@ -70,7 +70,7 @@ if __name__ == '__main__':
     nets = get_networks()
 
     circles = get_circles(nets, positions)
-    # circles = [(407, 222, 152.0182738030424), (546, 395, 78.7322553235653), (83, 110, 259.53757108554686), (631, 312, 10.253201506510855), (200, 371, 805.1857368246614), (206, 877, 756.4734324616041)]
+    #circles = [Circle(224, 288, 98.30908117508503), Circle(111, 614, 530.7598666118824), Circle(313, 65, 9.36606857087998), Circle(877, 490, 869.9444473308448)]
 
     print(circles)
     print_circles(circles)
