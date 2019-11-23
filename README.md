@@ -6,6 +6,6 @@ On the probes, we make periodic scans and report the rogue APs to a central serv
 Steps
 
    * setup and place Radius server and WPA2 Enterprise AP (https://github.com/ouaibe/howto/blob/master/OpenWRT/802.1xOnOpenWRTUsingFreeRadius.md might be helpful when using OpenWRT)  
-    * setup rogue AP - replicate the setup from the previous step but this time generate another CA and server certificate  
-    * setup central monitoring server  
-    * place Raspberry Pi probes and setup probing daemon with the correct central server IP  
+   * setup rogue AP - replicate the setup from the previous step but this time generate another CA and server certificate  
+   * setup central monitoring server  
+   * place Raspberry Pi probes and setup probing daemon with the correct central server IP  
