@@ -1,4 +1,4 @@
-from flask import Flask, request
+from flask import Flask, request, render_template
 from list_wifi_distances import center_of_gravity, Circle, DIST_MULTIPLIER, colors
 from my_trilateration import get_trilateration_point
 import matplotlib
@@ -15,9 +15,10 @@ class AP:
         'unknown': 'bo'
     }
 
-    def __init__(self, ssid, bssid, position, threat_type, distance=-1.0):
+    def __init__(self, ssid, bssid, bssid_suffix, position, threat_type, distance=-1.0):
         self.ssid = ssid
         self.bssid = bssid
+        self.bssid_suffix = bssid_suffix
         self.position = position
         self.threat_type = threat_type
         self.distance = distance
@@ -54,7 +55,6 @@ def draw():
             i += 1
         center_intersections = get_trilateration_point(circles)
         if center_intersections is not None:
-            centers.append(center_intersections)
             aps[-1].position = center_intersections
         else:
             aps[-1].position = center_of_gravity(circles)
@@ -68,32 +68,36 @@ def draw():
 def try_get(bssid):
     for ap in aps:
         if ap.bssid.startswith(bssid):
-            return value
+            return ap
     return None
 
 
 def add_rogue_ap(ssid, bssid):
     print(f"Added rogue AP with SSID {ssid}, BSSID {bssid}.")
     if try_get(bssid) is None:
-        aps.append(AP(ssid, bssid, (69, 69), 'rogue'))
+        aps.append(AP(ssid, bssid, '', (69, 69), 'rogue'))
 
 aps = [
-    AP('RaspberryPi-21', 'b8:27:eb:ba:cf:95', (281, 91), 'no_threat'),
-    AP('RaspberryPi-4', 'b8:27:eb:25:0c:e5', (150, 96), 'no_threat'),
-    AP('RaspberryPi-6', 'b8:27:eb:fb:1d:f6', (140, 200), 'no_threat'),
-    AP('RaspberryPi-8', 'b8:27:eb:3a:ef:b7', (280, 200), 'no_threat'),
-    AP('hackathon', 'B4:FB:E4:2B:B7:', (313, 65), 'unknown'),
-    AP('hackathon', 'B4:FB:E4:CF:88:', (224, 288), 'unknown'),
-    AP('hackathon', 'B4:FB:E4:2B:B1:', (111, 614), 'unknown'),
-    AP('hackathon', '18:E8:29:E', (394, 162), 'unknown'),
-    AP('hackathon', 'F0:9F:C2:F:', (372, 495), 'unknown'),
-    AP('hackathon', '78:8A:20:8', (778, 65), 'unknown'),
-    AP('hackathon', 'B4:FB:E4:21:38:', (877, 490), 'unknown')
+    AP('RaspberryPi-21', 'b8:27:eb:ba:cf:95', '', (281, 91), 'no_threat'),
+    AP('RaspberryPi-4', 'b8:27:eb:25:0c:e5', '', (150, 96), 'no_threat'),
+    AP('RaspberryPi-6', 'b8:27:eb:fb:1d:f6', '', (140, 200), 'no_threat'),
+    AP('RaspberryPi-8', 'b8:27:eb:3a:ef:b7', '', (280, 200), 'no_threat'),
+    AP('hackathon', 'B4:FB:E4:2B:B7:', 'E3', (313, 65), 'unknown'),
+    AP('hackathon', 'B4:FB:E4:CF:88:', '22', (224, 288), 'unknown'),
+    AP('hackathon', 'B4:FB:E4:2B:B1:', 'D7', (111, 614), 'unknown'),
+    AP('hackathon', '18:E8:29:E', '2:76:0A', (394, 162), 'unknown'),
+    AP('hackathon', 'F0:9F:C2:F', 'E:26:25', (372, 495), 'unknown'),
+    AP('hackathon', '78:8A:20:8', '2:4A:80', (778, 65), 'unknown'),
+    AP('hackathon', 'B4:FB:E4:21:38:', '6B', (877, 490), 'unknown')
 ]
 
 @app.route('/')
 def home():
     draw()
+    no_rogue_aps = filter(lambda x: x.threat_type == "no_threat", aps)
+    rogue_aps = filter(lambda x: x.threat_type == "rogue", aps)
+    other_aps = filter(lambda x: x.threat_type == "unknown", aps)
+    return render_template("index.html", aps=no_rogue_aps, rogue_aps=rogue_aps, other_aps=other_aps)
     return app.send_static_file("index.html")
 
 @app.route('/report', methods=['POST'])
@@ -118,8 +122,8 @@ def rogue_receive_threat():
         if aps[i].ssid.startswith("RaspberryPi"):
             name, id = aps[i].ssid.split('-')
             if id == "21":
-                print("no")
-                #requests.post(url='http://192.168.1.10:7777', data = {'bssid': bssid})
+                # requests.post(url='http://192.168.1.10:7777', data = {'bssid': bssid})
+                continue
             else:
                 print(f"POST 10.10.1.{id} with bssid {bssid}    ")
                 requests.post(url='http://10.10.1.{0}:7777'.format(id), data = {'bssid': bssid})
