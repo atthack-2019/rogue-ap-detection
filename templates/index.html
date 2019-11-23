@@ -11,7 +11,7 @@
 <h2>Access Points</h2>
   <ul>
     {% for ap in aps %}
-    <li><a href="#" style="color:#90ee90;">{{ap.ssid}} : {{ap.bssid + ap.bssid_suffix}}</a></li>
+    <li><a href="#" style="color:green;">{{ap.ssid}} : {{ap.bssid + ap.bssid_suffix}}</a></li>
     {% endfor %}
     <!--
     <li><a href="#" style="color:#90ee90;">Access point 2</a></li>
@@ -29,7 +29,7 @@
     <h2>Others</h2>
 <ul>
     {% for ap in other_aps %}
-    <li><a href="#" style="color:grey">{{ap.ssid}} : {{ap.bssid + ap.bssid_suffix}}</a></li>
+    <li><a href="#" style="color:blue">{{ap.ssid}} : {{ap.bssid + ap.bssid_suffix}}</a></li>
     {% endfor %}
 
   </ul>
