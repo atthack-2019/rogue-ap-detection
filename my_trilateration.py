@@ -75,7 +75,7 @@ def get_mean_location(point_list):
 
 def get_trilateration_point(circles):
     if len(circles) == 0:
-        return (0, 0)
+        return None
     p_list = calculate_intersection_points(circles)
     smallest_circle = find_smallest_circle(circles)
     res = remove_invalid_intersections(p_list,smallest_circle)

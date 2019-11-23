@@ -99,6 +99,8 @@ def save_plot(circles_ls, centers):
 
 
 def center_of_gravity(circles):
+    if len(circles) == 0:
+        return (-50, -50)
     mean_x = 0.0
     mean_y = 0.0
     mass_sum = 0.0

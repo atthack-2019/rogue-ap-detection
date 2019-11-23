@@ -1,5 +1,5 @@
 from flask import Flask, request
-from list_wifi_distances import center_of_gravity, Circle, DIST_MULTIPLIER
+from list_wifi_distances import center_of_gravity, Circle, DIST_MULTIPLIER, colors
 from my_trilateration import get_trilateration_point
 import matplotlib
 import matplotlib.pyplot as plt
@@ -22,17 +22,20 @@ class AP:
         self.threat_type = threat_type
         self.distance = distance
 
+    def __repr__(self):
+        return f"{self.bssid}: {self.position}, {self.distance}"
+
     def color(self):
         return self.type_to_color[self.threat_type]
 
 def get_circles():
     circles = []
     for ap in aps:
-        print(ap.distance)
+        print(ap)
         if ap.distance > 0.0:
-            print(ap)
             circles.append(Circle(ap.position[0], ap.position[1], ap.distance * DIST_MULTIPLIER))
     print(len(circles))
+
     return circles
 
 def draw():
@@ -45,6 +48,10 @@ def draw():
     if aps[-1].threat_type == "rogue":
         print("threat")
         circles = get_circles()
+        i = 0
+        for circle in circles:
+            ax.add_artist(plt.Circle((circle.x, circle.y), circle.radius, color = colors[i], alpha=0.5))
+            i += 1
         center_intersections = get_trilateration_point(circles)
         if center_intersections is not None:
             centers.append(center_intersections)
@@ -68,7 +75,7 @@ def try_get(bssid):
 def add_rogue_ap(ssid, bssid):
     print(f"Added rogue AP with SSID {ssid}, BSSID {bssid}.")
     if try_get(bssid) is None:
-        aps.append(AP(ssid, bssid, (0, 0), 'rogue'))
+        aps.append(AP(ssid, bssid, (69, 69), 'rogue'))
 
 aps = [
     AP('RaspberryPi-21', 'b8:27:eb:ba:cf:95', (281, 91), 'no_threat'),
