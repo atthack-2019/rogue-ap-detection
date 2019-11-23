@@ -1,6 +1,6 @@
 from flask import Flask
 from flask import request
-# import location
+import reporter
 
 app = Flask('SerPi')
 
@@ -8,7 +8,7 @@ app = Flask('SerPi')
 @app.route('/', methods=['POST'])
 def measure():
     bssid = request.args.get('bssid')
-    # call location computing
+    reporter.report(bssid)
     return
 
 
