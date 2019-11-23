@@ -8,6 +8,15 @@
                 }, 2000); // refresh every 2s
             }
         </script>
+        <style>
+            body {
+                background-image: url("heatmap.png");
+            }
+            img {
+                max-width: 100%;
+                max-height: 100%;
+            }
+        </style>
     </head>
     <body>
         <img src="plotcircles.png" name="circles" onload="refreshIt(this)">

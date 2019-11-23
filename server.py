@@ -6,16 +6,16 @@ app = Flask(__name__, static_url_path='')
 
 nets = [
     ('21', 5),
-    ('4', 10),
-    ('6', 15),
-    ('8', 20)
+    ('4', 5),
+    ('6', 5),
+    ('8', 5)
 ]
 
 positions = {
     '21': (0, 0),
-    '4': (0, 100),
-    '6': (100, 100),
-    '8': (100, 0)
+    '4': (0, 233),
+    '6': (233, 233),
+    '8': (233, 0)
 }
 
 @app.route('/')
@@ -32,8 +32,11 @@ def home():
 def report():
     form = request.form.to_dict(flat=False)
     print(form)
-    nets[form['id'][0]] = form['dist'][1]
-    return data
+    if form.get('dist', None) is not None:
+        for i in range(len(nets)):
+            if nets[i][0] == form['id'][0]:
+                nets[i] = (nets[i][0], float(form['dist'][1]))
+    return str(nets)
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port='8000')
