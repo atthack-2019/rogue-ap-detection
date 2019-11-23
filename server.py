@@ -3,7 +3,7 @@ from list_wifi_distances import get_circles, print_circles, center_of_gravity
 from my_trilateration import get_trilateration_point
 
 app = Flask(__name__, static_url_path='')
-
+rogue_bssid = None
 nets = [
     ('21', 15),
     ('4', 15),
@@ -38,6 +38,15 @@ def report():
         center_kukly = (-500, -500)
     print_circles(circles, [center_gravity, center_kukly])
     return str(nets)
+
+@app.route('/rogue', methods=['POST'])
+def rogue_receive_threat():
+    form = request.form.to_dict(flat=False)
+    if form.get['bssid'] is not None:
+        bssid = form.get['bssid']
+    for i in range(len(nets)):
+        request.post('10.10.1.{0}'.format(nets[i][0]), data = {'bssid': bssid})
+    rogue_bssid = bssid
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port='8000')
