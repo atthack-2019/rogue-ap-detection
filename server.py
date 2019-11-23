@@ -102,7 +102,7 @@ def report():
     print(form)
     if form.get('dist', None) is not None:
         for i in range(len(aps)):
-            if form['dist'][0].startswith(aps[i].bssid):
+            if aps[i].ssid.endswith(form['id'][0]):
                 aps[i].distance = float(form['dist'][1])
                 print(aps[i].distance)
     return "OK"

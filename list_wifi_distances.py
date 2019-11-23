@@ -78,26 +78,6 @@ def print_circles(circles_ls, centers):
     fig.savefig('static/plotcircles.png', transparent=True)
     plt.close(fig)
 
-def save_plot(circles_ls, centers):
-    plt_circles = []
-    for i in range (len(circles_ls)):
-        circle = circles_ls[i]
-        plt_circles.append(plt.Circle((circle.x, circle.y), circle.radius, color = colors[i], alpha=0.5))
-    fig, ax = plt.subplots()
-    plt.grid(linestyle='--')
-    ax.set_xlim((-1000, 1000))
-    ax.set_ylim((-1000, 1000))
-    for c in plt_circles:
-        ax.add_artist(c)
-    center_colors = ['r', 'b']
-    i = 0
-    for center in centers:
-        plt.plot(center[0], center[1], center_colors[i] + 'o')
-        i = ~i
-    fig.savefig('static/plotcircles.png', transparent=True)
-    plt.close(fig)
-
-
 def center_of_gravity(circles):
     if len(circles) == 0:
         return (-50, -50)
