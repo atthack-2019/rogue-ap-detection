@@ -3,9 +3,11 @@
 import numpy as np
 from wifi import Cell
 import matplotlib.pyplot as plt
+import matplotlib
 from my_trilateration import get_trilateration_point
 
 DIST_MULTIPLIER = 15.55555555
+matplotlib.use('Agg')
 
 positions = {
     'B4:FB:E4:2B:B7:': (313, 65),
@@ -74,7 +76,7 @@ def print_circles(circles_ls, centers):
         plt.plot(center[0], center[1], center_colors[i] + 'o')
         i = ~i
     fig.savefig('static/plotcircles.png', transparent=True)
-    #plt.close()
+    plt.close(fig)
 
 def center_of_gravity(circles):
     mean_x = 0.0
