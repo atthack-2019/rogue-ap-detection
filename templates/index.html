@@ -1,0 +1,38 @@
+<head>
+<link rel="stylesheet" type="text/css" href="mystyles.css" media="screen" />
+</head>
+<body>
+<h5>Rogue access points detector</h5>
+
+<div style="width: 800px; float:left; height:600px; margin:0px">
+    <img src="plotcircles.png" alt="" />
+</div>
+<div style="width: 300px; float:left; height:500px; margin:10px">
+<h2>Access Points</h2>
+  <ul>
+    {% for key, value in access_points.items() %}
+    <li><a href="#" style="color:#90ee90;">{{key}} : {{value}}</a></li>
+    {% endfor %}
+    <!--
+    <li><a href="#" style="color:#90ee90;">Access point 2</a></li>
+    <li><a href="#" style="color:#90ee90;">Access point 3</a></li>
+    <li><a href="#" style="color:#90ee90;">Access point 4</a></li>
+    -->
+  </ul>
+    <h2>Rogue AP</h2>
+<ul>
+{% for key, value in rogue_points.items() %}
+<li><a href="#" style="color:red;">{{key}} : {{value}}</a></li>
+{% endfor %}
+</ul>
+
+    <h2>Others</h2>
+<ul>
+    {% for key, value in others_points.items() %}
+    <li><a href="#" style="color:grey">{{key}} : {{value}}</a></li>
+    {% endfor %}
+
+  </ul>
+</div>
+
+</body>
