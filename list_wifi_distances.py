@@ -11,23 +11,14 @@ positions = {
     'B4:FB:E4:2B:B7:': (313, 65),
     'B4:FB:E4:CF:88:': (224, 288),
     'B4:FB:E4:2B:B1:': (111, 614),
-    '18:E8:29:E': (394, 162),
-    'F0:9F:C2:F:': (372, 495),
-    '78:8A:20:8': (778, 65),
-    'B4:FB:E4:21:38:': (877, 490)
+    #'18:E8:29:E': (394, 162),
+    #'F0:9F:C2:F:': (372, 495),
+    #'78:8A:20:8': (778, 65)
+    #'B4:FB:E4:21:38:': (877, 490)
 }
 
 def get_freq(frequency):
     return float(frequency.split()[0]) * 1000
-
-def get_network(mac):
-    result = []
-    nets = list(Cell.all('wlan0'))    
-    for net in nets:
-        if net.address == mac:
-            freq = get_freq(net.frequency)
-            return (net.address, dist(net.signal, freq))
-    return None
 
 def get_networks():
     result = []
@@ -73,8 +64,8 @@ def print_circles(circles_ls, centers):
         plt_circles.append(plt.Circle((circle.x, circle.y), circle.radius, color = colors[i], alpha=0.5))
     fig, ax = plt.subplots()
     plt.grid(linestyle='--')
-    ax.set_xlim((0, 650))
-    ax.set_ylim((0, 650))
+    ax.set_xlim((-1000, 1000))
+    ax.set_ylim((-1000, 1000))
     for c in plt_circles:
         ax.add_artist(c)
     center_colors = ['r', 'b']
@@ -82,7 +73,8 @@ def print_circles(circles_ls, centers):
     for center in centers:
         plt.plot(center[0], center[1], center_colors[i] + 'o')
         i = ~i
-    fig.savefig('plotcircles.png')
+    fig.savefig('static/plotcircles.png', transparent=True)
+    #plt.close()
 
 def center_of_gravity(circles):
     mean_x = 0.0
