@@ -1,6 +1,7 @@
 from flask import Flask, request, render_template
 from list_wifi_distances import center_of_gravity, Circle, DIST_MULTIPLIER, colors
 from my_trilateration import get_trilateration_point
+from wifi import Cell
 import matplotlib
 import matplotlib.pyplot as plt
 import requests
@@ -67,7 +68,7 @@ def draw():
 
 def try_get(bssid):
     for ap in aps:
-        if ap.bssid.startswith(bssid):
+        if ap.bssid.startswith(bssid) or bssid.startswith(ap.bssid):
             return ap
     return None
 
@@ -82,6 +83,7 @@ aps = [
     AP('RaspberryPi-4', 'b8:27:eb:25:0c:e5', '', (150, 96), 'no_threat'),
     AP('RaspberryPi-6', 'b8:27:eb:fb:1d:f6', '', (140, 200), 'no_threat'),
     AP('RaspberryPi-8', 'b8:27:eb:3a:ef:b7', '', (280, 200), 'no_threat'),
+    AP('turris-WPA2ent', '04:F0:21:45:CD:F3', '', (240, 107), 'no_threat'),
     AP('hackathon', 'B4:FB:E4:2B:B7:', 'E3', (313, 65), 'unknown'),
     AP('hackathon', 'B4:FB:E4:CF:88:', '22', (224, 288), 'unknown'),
     AP('hackathon', 'B4:FB:E4:2B:B1:', 'D7', (111, 614), 'unknown'),
@@ -90,6 +92,12 @@ aps = [
     AP('hackathon', '78:8A:20:8', '2:4A:80', (778, 65), 'unknown'),
     AP('hackathon', 'B4:FB:E4:21:38:', '6B', (877, 490), 'unknown')
 ]
+
+def scan_networks():
+    nets = list(Cell.all('wlan0'))
+    for net in nets:
+        if try_get(net.address) is None:
+            aps.append(AP(net.ssid, net.address, '', (-100, -100), 'unknown'))
 
 @app.route('/')
 def home():
@@ -128,6 +136,11 @@ def rogue_receive_threat():
                 print(f"POST 10.10.1.{id} with bssid {bssid}    ")
                 requests.post(url='http://10.10.1.{0}:7777'.format(id), data = {'bssid': bssid})
     
+    return "ok"
+
+@app.route('/scan')
+def scan():
+    scan_networks()
     return "ok"
 
 if __name__ == "__main__":
