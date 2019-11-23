@@ -1,6 +1,6 @@
 import numpy as np
 import itertools
-GOOD_DIST = 200
+GOOD_DIST = 150
 
 class Circle:
     def __init__(self, x, y, radius):
