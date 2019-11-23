@@ -1,4 +1,5 @@
 import subprocess
+import requests
 import time
 import importlib
 
@@ -24,8 +25,10 @@ network={{
 """
 
 # BAD = "04:f0:21:42:1a:06"
-GOOD = "04:f0:21:45:cd:f3"
+# GOOD = "04:f0:21:45:cd:f3"
 
+
+SERVER = '10.10.10.93:8000'
 def generate_wpasupplicant(ssid, bssid):
     filled = template.format(ssid, bssid)
     with open("/tmp/wpa_supplicant", "w") as f:
@@ -44,17 +47,28 @@ def check_result():
     with open("/tmp/out") as f:
         res = f.read()
         if "CTRL-EVENT-EAP-SUCCESS" in res and "CTRL-EVENT-EAP-FAILURE EAP" not in res:
-            print("OK")
+            return True
         else:
-            print("FAIL")
+            return False
 
+def report_third_party(to_report):
+    addr = SERVER + "/third_party"
+    requests.post(addr, data=to_report)
 
+def report_rogue(ssid, bssid):
+    addr = SERVER + "/rogue"
+    requests.post(addr, data={'ssid':ssid, 'bssid': bssid})
 
-invalid, to_check = scanner.control_AP('"turris-WPA2ent"', "", "")
+invalid, to_check = scanner.control_AP('wlan0', "turris-WPA2ent", "")
 print(invalid, to_check)
+report_third_party(invalid)
 for tup in to_check:
     bssid = tup[0]
     generate_wpasupplicant('turris-WPA2ent', bssid)
     run_scan()
     print(tup)
-    check_result()
+    if not check_result():
+        print("FAIL")
+        report_rogue(bssid, 'turris-WPA2ent')
+    else:
+        print("OK")
