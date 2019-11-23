@@ -8,7 +8,7 @@ def get_ssid(interface, valid_ssid, valid_encryption):
     sub_valid_AP = []
 
     for e in aps:
-        if e.ssid != valid_ssid or  not e.encrypted or valid_encryption != e.encryption_type:
+        if e.ssid != valid_ssid:
                 invalid_AP.append((e.address, e.ssid))
         else:
             sub_valid_AP.append((e.address, e.ssid))
