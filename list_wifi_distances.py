@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 import matplotlib
 from my_trilateration import get_trilateration_point
 
-DIST_MULTIPLIER = 15.55555555
+DIST_MULTIPLIER = 5.55555555
 matplotlib.use('Agg')
 
 positions = {

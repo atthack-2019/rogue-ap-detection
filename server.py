@@ -47,21 +47,22 @@ def draw():
     plt.grid(linestyle='--')
     print(aps)
 
-    if aps[-1].threat_type == "rogue":
-        print("threat")
-        circles = get_circles()
-        i = 0
-        for circle in circles:
-            ax.add_artist(plt.Circle((circle.x, circle.y), circle.radius, color = colors[i], alpha=0.5))
-            i += 1
-        center_intersections = get_trilateration_point(circles)
-        if center_intersections is not None:
-            aps[-1].position = center_intersections
-        else:
-            aps[-1].position = center_of_gravity(circles)
-
-    for ap in aps:        
-        plt.plot(ap.position[0], ap.position[1], ap.color())
+    for ap in aps:
+        if ap.threat_type == "rogue":
+            print("threat")
+            circles = get_circles()
+            i = 0
+            for circle in circles:
+                # ax.add_artist(plt.Circle((circle.x, circle.y), circle.radius, color = colors[i], alpha=0.5))
+                i += 1
+            center_intersections = get_trilateration_point(circles)
+            if center_intersections is not None:
+                ap.position = center_intersections
+            else:
+                ap.position = center_of_gravity(circles)
+        marker_size = 12 if ap.threat_type == "rogue" else 8
+        zorder = 2 if ap.threat_type == "no_threat" else 1
+        plt.plot(ap.position[0], ap.position[1], ap.color(), markersize=marker_size, zorder=zorder)
 
     fig.savefig('static/plotaps.png', transparent=True)
     plt.close(fig)
@@ -76,7 +77,7 @@ def try_get(bssid):
 def add_rogue_ap(ssid, bssid):
     print(f"Added rogue AP with SSID {ssid}, BSSID {bssid}.")
     if try_get(bssid) is None:
-        aps.append(AP(ssid, bssid, '', (69, 69), 'rogue'))
+        aps.append(AP(ssid, bssid, '', (0, 0), 'rogue'))
 
 aps = [
     AP('RaspberryPi-21', 'b8:27:eb:ba:cf:95', '', (281, 91), 'no_threat'),
